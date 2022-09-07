@@ -1,5 +1,5 @@
-
-
+{% extends "base.html" %}
+{% block content %}
     <h1>{{ post }}</h1>
     <p class="byline">
         Posted by {{ post.authoer.username }} &mdash; {{ post.published_date}}
@@ -12,3 +12,4 @@
             <li>{{ category }}</li>
         {% endfor %}
     </ul>
+{% endblock %}
