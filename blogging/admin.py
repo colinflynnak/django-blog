@@ -3,7 +3,7 @@ from blogging.models import Post, Category
 
 
 class CategoryInline(admin.TabularInline):
-    model = Category
+    model = Category.posts.through
 
 
 class PostAdmin(admin.ModelAdmin):
