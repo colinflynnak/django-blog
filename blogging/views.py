@@ -15,14 +15,23 @@ def stub_view(request, *args, **kwargs):
     return HttpResponse(body, content_type="text/plain")
 
 
+class ListView():
+    def as_view(self):
+        return self.get
+
+    def get(self, request):
+        model_list_name = self.model.__name__.lower() + '_list'
+        context = {model_list_name: self.model.objects.all()}
+        return render(request, self.template_name, context)
+
+
 def list_view(request):
     published = Post.objects.exclude(published_date__exact=None)
     posts = published.order_by('-published_date') # "-" Reverses order, most recent first
     template = loader.get_template('blogging/list.html')
     context = {'posts': posts}
     body = template.render(context)
-    #return render(request, 'blogging/list.html', context)
-    return HttpResponse(body, content_type="text/html")
+    return render(request, 'blogging/list.html', context)
 
 
 def detail_view(request, post_id):

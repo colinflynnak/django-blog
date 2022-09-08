@@ -14,7 +14,7 @@
             {{ post.text }}
         </div>
         <ul class="categories">
-            {% for categories in post.categories.all %}
+            {% for category in post.categories.all %}
                 <li>{{ category }}</li>
             {% endfor %}
         </ul>
