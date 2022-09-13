@@ -2,33 +2,22 @@ from django.http.response import HttpResponse, Http404
 from blogging.models import Post
 from django.template import loader
 from django.shortcuts import render
+from django.views.generic.list import ListView
+from django.views.generic.detail import DetailView
+from django.shortcuts import get_object_or_404
 
 
-def stub_view(request, *args, **kwargs):
-    body = "Stub View\n\n"
-    if args:
-        body += "Args: \n"
-        body += "\n".join(["\t%s" % a for a in args])
-    if kwargs:
-        body += "Kwargs: \n"
-        body += "\n".join(["\t%s: %s" % k for k in kwargs.items()])
-    return HttpResponse(body, content_type="text/plain")
+class BlogListView(ListView):
+    queryset = Post.objects.exclude(published_date__exact=None).order_by('-published_date')
+    context_object_name = 'posts'
+    template_name = 'blogging/list.html'
 
 
-def list_view(request):
-    published = Post.objects.exclude(published_date__exact=None)
-    posts = published.order_by('-published_date') # "-" Reverses order, most recent first
-    template = loader.get_template('blogging/list.html')
-    context = {'posts': posts}
-    body = template.render(context)
-    return render(request, 'blogging/list.html', context)
+class BlogDetailView(DetailView):
+    # queryset = Post.objects.exclude(published_date__exact=None)
+    context_object_name = 'post'
+    template_name = 'blogging/detail.html'
 
-
-def detail_view(request, post_id):
-    published = Post.objects.exclude(published_date__exact=None)
-    try:
-        post = published.get(pk=post_id)
-    except Post.DoesNotExist:
-        raise Http404
-    context = {'post': post}
-    return render(request, 'blogging/detail.html', context)
+    def get_queryset(self):
+        self.post = get_object_or_404(Post, pk=self.kwargs['pk'])  # self.post is a model object, based on the subsequent query (pk = xxx)
+        return Post.objects.exclude(published_date__exact=None).filter(pk=self.post.pk)
