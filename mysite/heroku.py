@@ -18,4 +18,3 @@ MIDDLEWARE = (
     "whitenoise.middleware.WhiteNoiseMiddleware",
     *MIDDLEWARE,
 )
-
