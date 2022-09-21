@@ -5,6 +5,8 @@ from django.shortcuts import render
 from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
 from django.shortcuts import get_object_or_404
+from django.contrib.syndication.views import Feed
+from django.urls import reverse
 
 
 class BlogListView(ListView):
@@ -25,3 +27,22 @@ class BlogDetailView(DetailView):
             Post, pk=self.kwargs["pk"]
         )  # self.post is a model object, based on the subsequent query (pk = xxx)
         return Post.objects.exclude(published_date__exact=None).filter(pk=self.post.pk)
+
+
+class LatestEntriesFeed(Feed):
+    title = "My Cool Blog"
+    link = "/"
+    description = "Updates on changes and additions to My Cool Blog."
+
+    def items(self):
+        return Post.objects.order_by('-pub_date')[:5]
+
+    def item_title(self, item):
+        return item.title
+
+    def item_description(self, item):
+        return item.text
+
+    # item_link is only needed if NewsItem has no get_absolute_url method.
+    def item_link(self, item):
+        return reverse("posts/<int:pk>/", args=[item.pk])

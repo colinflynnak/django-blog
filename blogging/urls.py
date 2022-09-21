@@ -1,10 +1,11 @@
 from django.urls import path
-from blogging.views import BlogListView, BlogDetailView
+from blogging.views import BlogListView, BlogDetailView, LatestEntriesFeed
 
 
 urlpatterns = [
     path("", BlogListView.as_view(), name="blog_index"),
     path(
         "posts/<int:pk>/", BlogDetailView.as_view(), name="blog_detail"
-    ),  # variable (<>) must be named 'pk'
+    ),
+    path('feed', LatestEntriesFeed())
 ]
