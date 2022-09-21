@@ -35,7 +35,7 @@ class LatestEntriesFeed(Feed):
     description = "Updates on changes and additions to My Cool Blog."
 
     def items(self):
-        return Post.objects.order_by('-pub_date')[:5]
+        return Post.objects.order_by("-pub_date")[:5]
 
     def item_title(self, item):
         return item.title
