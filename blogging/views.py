@@ -31,11 +31,11 @@ class BlogDetailView(DetailView):
 
 class LatestEntriesFeed(Feed):
     title = "My Cool Blog"
-    link = "/"
+    link = "/feed/"
     description = "Updates on changes and additions to My Cool Blog."
 
     def items(self):
-        return Post.objects.order_by("-pub_date")[:5]
+        return Post.objects.exclude(published_date__exact=None).order_by("published_date")[:5]
 
     def item_title(self, item):
         return item.title
@@ -45,4 +45,4 @@ class LatestEntriesFeed(Feed):
 
     # item_link is only needed if NewsItem has no get_absolute_url method.
     def item_link(self, item):
-        return reverse("posts/<int:pk>/", args=[item.pk])
+        return reverse("blog_detail", args=[item.pk])
